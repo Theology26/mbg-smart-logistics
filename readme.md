@@ -10,7 +10,7 @@ Proyek ini adalah tugas pembuatan REST API dasar menggunakan Golang. Fungsionali
      * Buka aplikasi Laragon, lalu klik tombol **Start All** untuk menyalakan Apache dan MySQL. (Perhatikan port MySQL yang aktif, biasanya 3306 atau 3308).
    * **Jika menggunakan XAMPP:**
      * Buka aplikasi XAMPP Control Panel.
-     * Klik tombol **Start** pada modul **Apache** dan **MySQL**. (Secara default MySQL berjalan di port 3306).
+     * Klik tombol **Start** pada modul **Apache** dan **MySQL**. (Default MySQL jalan di port 3306).
    
    * **Membuat Struktur Database:**
      * Buka browser dan akses phpMyAdmin melalui `http://localhost/phpmyadmin`.
@@ -21,7 +21,7 @@ Proyek ini adalah tugas pembuatan REST API dasar menggunakan Golang. Fungsionali
    * Buka terminal di folder proyek.
    * Unduh library yang dibutuhkan dengan perintah:
      `go mod tidy`
-   * Buka file `main.go`, pastikan port database (DSN) sudah sesuai dengan port MySQL yang menyala di komputer Anda (contoh menggunakan port 3308):
+   * Buka file `main.go`, pastikan port database (DSN) sudah sesuai dengan port MySQL yang menyala di komputer (contoh menggunakan port 3308):
      `dsn := "root:@tcp(localhost:3308)/mbg_smart_logistics?charset=utf8mb4&parseTime=True&loc=Local"`
 
 3. **Menjalankan Server:**
