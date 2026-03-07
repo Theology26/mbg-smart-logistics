@@ -1,53 +1,55 @@
-CREATE TABLE users (
+CREATE TABLE pengguna (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    nama VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('vendor', 'guru') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
-
-CREATE TABLE ingredient_qcs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    ingredient_name VARCHAR(100) NOT NULL,
-    photo_url VARCHAR(255) NOT NULL,
-    status ENUM('SAFE', 'UNSAFE') NOT NULL,
-    ai_analysis TEXT,
+    kata_sandi VARCHAR(255) NOT NULL,
+    peran ENUM('admin', 'kurir', 'guru') NOT NULL,
+    tipe_kendaraan ENUM('motor', 'mobil', 'tidak_ada') DEFAULT 'tidak_ada',
+    kapasitas_kendaraan INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB;
 
-CREATE TABLE delivery_plans (
+CREATE TABLE lokasi (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    menu_name VARCHAR(150) NOT NULL,
-    school_name VARCHAR(150) NOT NULL,
-    distance_km FLOAT NOT NULL,
-    travel_time_hr FLOAT NOT NULL,
-    status ENUM('APPROVED', 'REJECTED') NOT NULL,
-    ai_reason TEXT,
-    delivery_date DATETIME NOT NULL,
+    nama_lokasi VARCHAR(150) NOT NULL,
+    tipe_lokasi ENUM('DAPUR', 'SEKOLAH', 'ESTAFET') NOT NULL,
+    latitude DOUBLE NOT NULL,
+    longitude DOUBLE NOT NULL,
+    kebutuhan_boks INT DEFAULT 0,
+    jam_buka VARCHAR(10) NOT NULL,
+    jam_tutup VARCHAR(10) NOT NULL,
+    waktu_layanan_menit INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB;
 
-CREATE TABLE confirmations ( 
-    id INT AUTO_INCREMENT PRIMARY KEY, 
-    delivery_plan_id INT NOT NULL UNIQUE, 
-    guru_id INT NOT NULL, 
-    photo_proof VARCHAR(255), 
-    received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (delivery_plan_id) REFERENCES delivery_plans(id) ON DELETE CASCADE, 
-    FOREIGN KEY (guru_id) REFERENCES users(id) ON DELETE CASCADE 
-) ENGINE=InnoDB;
-
-CREATE TABLE feedbacks (
+CREATE TABLE rute (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    delivery_plan_id INT NOT NULL UNIQUE,
-    rating INT NOT NULL,
-    comment TEXT,
-    is_fresh BOOLEAN NOT NULL,
+    kurir_id INT NOT NULL,
+    tanggal DATE NOT NULL,
+    total_jarak_km DOUBLE DEFAULT 0,
+    status_rute ENUM('TUNDA', 'PROSES', 'SELESAI') DEFAULT 'TUNDA',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (delivery_plan_id) REFERENCES delivery_plans(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    FOREIGN KEY (kurir_id) REFERENCES pengguna(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE pemberhentian_rute (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rute_id INT NOT NULL,
+    lokasi_id INT NOT NULL,
+    urutan_berhenti INT NOT NULL,
+    estimasi_tiba DATETIME NOT NULL,
+    boks_turun INT DEFAULT 0,
+    boks_naik INT DEFAULT 0,
+    apakah_estafet BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    FOREIGN KEY (rute_id) REFERENCES rute(id) ON DELETE CASCADE,
+    FOREIGN KEY (lokasi_id) REFERENCES lokasi(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
