@@ -24,12 +24,12 @@ type Pengguna struct {
 type Lokasi struct {
 	gorm.Model
 	NamaLokasi        string  `gorm:"type:varchar(150);not null" json:"nama_lokasi"`
-	TipeLokasi        string  `gorm:"type:enum('DAPUR', 'SEKOLAH', 'ESTAFET');not null" json:"tipe_lokasi"`
+	TipeLokasi        string  `gorm:"type:enum('SPPG', 'SEKOLAH', 'ESTAFET');not null" json:"tipe_lokasi"`
 	Latitude          float64 `gorm:"not null" json:"latitude"`
 	Longitude         float64 `gorm:"not null" json:"longitude"`
-	KebutuhanBoks     *int    `gorm:"default:0" json:"kebutuhan_boks"`
-	JamBuka           string  `gorm:"type:varchar(10);not null" json:"jam_buka"`
-	JamTutup          string  `gorm:"type:varchar(10);not null" json:"jam_tutup"`
+	KebutuhanPorsi    *int    `gorm:"default:0" json:"kebutuhan_porsi"`
+	KontakPic         string  `gorm:"type:varchar(100)" json:"kontak_pic"`
+	BatasWaktu        string  `gorm:"type:varchar(10)" json:"batas_waktu"`
 	WaktuLayananMenit *int    `gorm:"default:0" json:"waktu_layanan_menit"`
 
 	PemberhentianRute []PemberhentianRute `gorm:"foreignKey:LokasiID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"pemberhentian_rute"`
@@ -37,23 +37,27 @@ type Lokasi struct {
 
 type Rute struct {
 	gorm.Model
-	KurirID      uint      `gorm:"not null" json:"kurir_id"`
-	Tanggal      time.Time `gorm:"type:date;not null" json:"tanggal"`
-	TotalJarakKm float64   `gorm:"default:0" json:"total_jarak_km"`
-	StatusRute   string    `gorm:"type:enum('TUNDA', 'PROSES', 'SELESAI');default:'TUNDA'" json:"status_rute"`
+	KurirID            uint      `gorm:"not null" json:"kurir_id"`
+	Tanggal            time.Time `gorm:"type:date;not null" json:"tanggal"`
+	TotalJarakKm       float64   `gorm:"default:0" json:"total_jarak_km"`
+	WaktuMulaiAktual   string    `gorm:"type:time" json:"waktu_mulai_aktual"`
+	WaktuSelesaiAktual string    `gorm:"type:time" json:"waktu_selesai_aktual"`
+	StatusRute         string    `gorm:"type:enum('TUNDA', 'PROSES', 'SELESAI');default:'TUNDA'" json:"status_rute"`
 
 	PemberhentianRute []PemberhentianRute `gorm:"foreignKey:RuteID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"pemberhentian_rute"`
 }
 
 type PemberhentianRute struct {
 	gorm.Model
-	RuteID         uint      `gorm:"not null" json:"rute_id"`
-	LokasiID       uint      `gorm:"not null" json:"lokasi_id"`
-	UrutanBerhenti int       `gorm:"not null" json:"urutan_berhenti"`
-	EstimasiTiba   time.Time `gorm:"not null" json:"estimasi_tiba"`
-	BoksTurun      *int      `gorm:"default:0" json:"boks_turun"`
-	BoksNaik       *int      `gorm:"default:0" json:"boks_naik"`
-	ApakahEstafet  bool      `gorm:"default:false" json:"apakah_estafet"`
+	RuteID           uint       `gorm:"not null" json:"rute_id"`
+	LokasiID         uint       `gorm:"not null" json:"lokasi_id"`
+	UrutanBerhenti   int        `gorm:"not null" json:"urutan_berhenti"`
+	WaktuTibaAktual  *time.Time `gorm:"type:datetime" json:"waktu_tiba_aktual"`
+	PorsiTurun       *int       `gorm:"default:0" json:"porsi_turun"`
+	PorsiNaik        *int       `gorm:"default:0" json:"porsi_naik"`
+	BuktiFoto        string     `gorm:"type:varchar(255)" json:"bukti_foto"`
+	Catatan          string     `gorm:"type:text" json:"catatan"`
+	StatusPerhentian string     `gorm:"type:enum('MENUNGGU', 'TIBA', 'SELESAI', 'GAGAL');default:'MENUNGGU'" json:"status_perhentian"`
 }
 
 var DB *gorm.DB
