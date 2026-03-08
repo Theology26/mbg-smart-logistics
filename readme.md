@@ -45,9 +45,9 @@ Fokus pada tugas ini adalah endpoint untuk menambahkan dan melihat data lokasi.
     "tipe_lokasi": "SEKOLAH",
     "latitude": -7.992134,
     "longitude": 112.619011,
-    "kebutuhan_boks": 120,
-    "jam_buka": "07:00",
-    "jam_tutup": "09:30",
+    "kebutuhan_porsi": 120,
+    "kontak_pic": "Pak Budi - 08123456789",
+    "batas_waktu": "09:30",
     "waktu_layanan_menit": 15
 }
 ```
